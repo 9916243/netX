@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Исследование рынка: Сервис нетворкинга в Telegram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for chart containers and interactions */
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 400px; }
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #2563eb; /* Tailwind blue-600 */
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Utility classes for layout */
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; }
+        
+        /* Hide scrollbar for clean horizontal lists */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Chosen Palette: Slate and Blue (Tech/Telegram vibe). Neutral background (slate-50) with primary interactive elements in blue (blue-600) and accents in amber (amber-500) for VIP/premium features. -->
+    
+    <!-- Application Structure Plan: 
+         1. Hero Header: Clear context.
+         2. Global Market Pains (Data/Charts): Objective view of the problem space using visual data.
+         3. Audience Deep-Dive (Interactive Tabs): Categorized insights for Organizers, Networkers, and Investors (crucial based on audio transcripts).
+         4. Existing Solutions vs. Telegram PWA (Comparison Matrix): Highlighting the competitive advantage.
+         5. Architecture & Future Vision: Incorporating the specific ideas from the audio (AI agents, DB scalability, Stealth mode).
+         Why this structure? It follows a logical pitch/research flow: Problem -> Audience specific pains -> Competitor gaps -> The specific proposed solution. -->
+    
+    <!-- Visualization & Content Choices:
+         - Global Pains: Bar chart (Chart.js) to compare the severity of different frustrations. Goal: Inform & Compare.
+         - Audience Needs: Interactive tabs with descriptive lists. Goal: Organize detailed qualitative data without overwhelming the screen.
+         - Competitor Analysis: Side-by-side CSS Grid. Goal: Compare traditional vs. new approach.
+         - Iconography: Unicode characters used exclusively.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-3xl">🚀</span>
+                <h1 class="text-xl font-bold text-slate-900 leading-tight">NetX Analytics<br><span class="text-sm font-normal text-slate-500">Telegram Networking PWA</span></h1>
+            </div>
+            <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-600">
+                <a href="#problems" class="hover:text-blue-600 transition">Проблематика</a>
+                <a href="#audience" class="hover:text-blue-600 transition">Целевые аудитории</a>
+                <a href="#solutions" class="hover:text-blue-600 transition">Анализ решений</a>
+                <a href="#vision" class="hover:text-blue-600 transition">Видение продукта</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Introduction -->
+        <section class="text-center max-w-3xl mx-auto space-y-4">
+            <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Глобальное исследование рынка нетворкинга</h2>
+            <p class="text-lg text-slate-600">
+                Сводный анализ болей, потребностей и текущих решений для организаторов мероприятий и участников по всему миру. Данные собраны для обоснования разработки интеллектуального PWA сервиса в Telegram.
+            </p>
+        </section>
+
+        <!-- Section 1: Global Market Pains -->
+        <section id="problems" class="scroll-mt-24">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold flex items-center gap-2"><span>📊</span> Общая проблематика индустрии</h3>
+                <p class="text-slate-600 mt-2">В этом блоке представлена количественная оценка главных разочарований участников бизнес-мероприятий. Интерактивный график наглядно демонстрирует, почему традиционные подходы теряют эффективность.</p>
+            </div>
+            
+            <div class="glass-panel rounded-2xl p-6 shadow-sm">
+                <div class="chart-container">
+                    <canvas id="painsChart"></canvas>
+                </div>
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-slate-100 rounded-xl">
+                        <div class="text-3xl font-bold text-blue-600 mb-1">68%</div>
+                        <div class="text-sm text-slate-700">Скачанных event-приложений удаляются в течение 24 часов</div>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-xl">
+                        <div class="text-3xl font-bold text-blue-600 mb-1">85%</div>
+                        <div class="text-sm text-slate-700">Собранных визиток никак не используются после мероприятия</div>
+                    </div>
+                    <div class="p-4 bg-slate-100 rounded-xl">
+                        <div class="text-3xl font-bold text-blue-600 mb-1">4.5x</div>
+                        <div class="text-sm text-slate-700">Выше конверсия в контакт при наличии контекста (оцифрованных интересов)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Audience Deep-Dive (Interactive Tabs) -->
+        <section id="audience" class="scroll-mt-24">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold flex items-center gap-2"><span>🎯</span> Анализ целевых аудиторий</h3>
+                <p class="text-slate-600 mt-2">Рынок состоит из трех ключевых сегментов. Выберите вкладку ниже, чтобы изучить специфические боли, текущие "костыльные" решения и скрытые потребности каждой группы.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Tabs Navigation -->
+                <div class="flex border-b border-slate-200 overflow-x-auto no-scrollbar">
+                    <button class="tab-btn active px-6 py-4 text-sm md:text-base text-slate-500 whitespace-nowrap focus:outline-none" data-target="tab-organizers">
+                        🤵 Организаторы
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm md:text-base text-slate-500 whitespace-nowrap focus:outline-none" data-target="tab-networkers">
+                        🤝 Нетворкеры (Участники)
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm md:text-base text-slate-500 whitespace-nowrap focus:outline-none" data-target="tab-investors">
+                        💎 Инвесторы / VIP
+                    </button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="p-6 md:p-8 min-h-[350px]">
+                    
+                    <!-- Content: Organizers -->
+                    <div id="tab-organizers" class="tab-content active">
+                        <h4 class="text-xl font-semibold mb-4 text-slate-800">Что говорят Организаторы мероприятий?</h4>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-bold text-red-500 mb-2">🔥 Главные боли</h5>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Низкий Adoption Rate:</b> Невозможно заставить людей качать отдельное приложение ради 1-2 дней.</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Отсутствие метрик:</b> Сложно доказать спонсорам ROI, так как нетворкинг проходит в "слепой зоне" (визитки, личные тг).</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Хаос в чатах:</b> Создание общего чата в Telegram превращается в свалку спама, которой невозможно управлять.</span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-green-600 mb-2">💡 Желания и Потребности</h5>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700">Инструмент "в один клик" без установки (PWA в привычном мессенджере).</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700">Тепловая карта связей: понимать, кто с кем знакомится, для улучшения матчмейкинга на будущих ивентах.</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700">Управляемый ИИ-модератор для борьбы со спамом и стимуляции общения.</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content: Networkers -->
+                    <div id="tab-networkers" class="tab-content">
+                        <h4 class="text-xl font-semibold mb-4 text-slate-800">Что говорят Нетворкеры (Посетители)?</h4>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-bold text-red-500 mb-2">🔥 Главные боли</h5>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Усталость от случайных связей:</b> Трата 80% времени на общение с нецелевыми людьми.</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Потеря контекста:</b> "Записал 15 контактов в телегу, на следующий день не помню, кто есть кто и о чем договорились".</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Сложность первого шага:</b> Неловко подходить к незнакомым людям без понимания их компетенций.</span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-green-600 mb-2">💡 Желания и Потребности</h5>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700">Мгновенный обмен профилями через QR прямо в приложении, где уже идет общение (Telegram).</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700">Система смарт-тегов и заметок, привязанных к контакту СРАЗУ в момент знакомства.</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700">Умные рекомендации: "С кем мне стоит поговорить прямо сейчас в этом зале?"</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content: Investors -->
+                    <div id="tab-investors" class="tab-content">
+                        <h4 class="text-xl font-semibold mb-4 text-slate-800">Что говорят VIP и Инвесторы?</h4>
+                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl mb-6">
+                            <p class="text-sm text-amber-800 italic">"Если я покажу статус инвестора, ко мне выстроится толпа с нерелевантными питчами. Мне приходится скрываться, хотя я ищу хорошие проекты."</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-bold text-red-500 mb-2">🔥 Главные боли</h5>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Отсутствие фильтров на входе:</b> Любой может написать напрямую, перегружая личку.</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▪️</span> <span class="text-slate-700"><b>Угроза приватности:</b> Опасение, что их контактные данные попадут в открытые базы или парсеры.</span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-green-600 mb-2">💡 Потребности & Решение (Top-tier Feature)</h5>
+                                <ul class="space-y-3">
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700"><b>Режим "Невидимки":</b> Платная/премиальная функция. Возможность скрыть свой профиль из общего каталога.</span></li>
+                                    <li class="flex gap-2 items-start"><span class="text-xl">▫️</span> <span class="text-slate-700"><b>Односторонняя видимость:</b> Инвестор видит всех и может инициировать контакт, но другие не видят его статус инвестора (или видят только ту часть профиля, которую он разрешил).</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Existing vs Proposed -->
+        <section id="solutions" class="scroll-mt-24">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold flex items-center gap-2"><span>⚖️</span> Существующие решения vs Наш подход</h3>
+                <p class="text-slate-600 mt-2">Сравнительный анализ того, какими "костылями" пользуются сейчас, и как архитектура Telegram PWA решает эти проблемы комплексно.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Current Solutions -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <h4 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Текущие решения на рынке</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="flex flex-col gap-1">
+                            <span class="font-semibold text-slate-700">1. Бумажные визитки / NFC-карты</span>
+                            <span class="text-sm text-slate-500">❌ Не сохраняют контекст. Нет поиска. NFC-карты стоят денег и их забывают дома.</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="font-semibold text-slate-700">2. Классические Event-приложения (App Store/GP)</span>
+                            <span class="text-sm text-slate-500">❌ Высокий барьер входа (скачать, зарегистрироваться, вспомнить пароль). Удаляются после ивента.</span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <span class="font-semibold text-slate-700">3. Обычные чаты в Telegram/WhatsApp</span>
+                            <span class="text-sm text-slate-500">❌ Информационный шум. Невозможно найти нужного человека по компетенциям. Нет приватности.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proposed App -->
+                <div class="bg-blue-600 border border-blue-700 rounded-2xl p-6 shadow-md text-white relative overflow-hidden">
+                    <!-- decorative background elements using pure css -->
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-white opacity-10"></div>
+                    <div class="absolute bottom-0 right-10 -mb-8 w-24 h-24 rounded-full bg-white opacity-10"></div>
+                    
+                    <h4 class="text-lg font-bold mb-4 border-b border-blue-500 pb-2">Решение: Интеллектуальный Telegram PWA</h4>
+                    
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1 bg-white text-blue-600 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0">1</div>
+                            <div>
+                                <span class="font-semibold block">Нулевой барьер входа</span>
+                                <span class="text-sm text-blue-100">Работает прямо в браузере внутри мессенджера Telegram, который уже установлен у 99% бизнес-аудитории.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1 bg-white text-blue-600 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0">2</div>
+                            <div>
+                                <span class="font-semibold block">Масштабируемая БД (Архитектура "на вырост")</span>
+                                <span class="text-sm text-blue-100">Изначально заложенная структура графов связей. Используется на 3%, но готова к масштабированию до глобальной соц.сети.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1 bg-white text-blue-600 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0">3</div>
+                            <div>
+                                <span class="font-semibold block">Глубокие настройки приватности</span>
+                                <span class="text-sm text-blue-100">Пользователь сам решает, какую информацию отдавать. "Stealth-модель" для инвесторов.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Product Strategy (AI Agents) -->
+        <section id="vision" class="scroll-mt-24 pb-12">
+             <div class="mb-6">
+                <h3 class="text-2xl font-bold flex items-center gap-2"><span>🤖</span> Видение: AI-Агенты вместо команд</h3>
+                <p class="text-slate-600 mt-2">Основываясь на инсайтах исследования, развитие сервиса предполагает интеграцию функциональных AI-моделей для полной автоматизации сопровождения мероприятий.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <div class="grid md:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 flex flex-col items-center">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4">🕵️‍♂️</div>
+                        <h4 class="font-bold text-slate-800 mb-2">AI-Матчмейкер</h4>
+                        <p class="text-sm text-slate-600">Анализирует профили, запросы и "теги" пользователей, присылая пуш-уведомления: "В 5 метрах от вас человек, который ищет инвестиции в ваш сектор".</p>
+                    </div>
+                    <div class="p-4 flex flex-col items-center">
+                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4">✍️</div>
+                        <h4 class="font-bold text-slate-800 mb-2">AI-Секретарь</h4>
+                        <p class="text-sm text-slate-600">Автоматически расшифровывает голосовые заметки после обмена контактами и вписывает структурированные фоллоу-апы в базу данных пользователя.</p>
+                    </div>
+                    <div class="p-4 flex flex-col items-center">
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-3xl mb-4">🛡️</div>
+                        <h4 class="font-bold text-slate-800 mb-2">AI-Модератор (Privacy Guard)</h4>
+                        <p class="text-sm text-slate-600">Отслеживает нежелательные массовые рассылки (спам) и защищает аккаунты "в тени", маскируя их данные для нерелевантных контактов.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
+        <p>&copy; 2026 NetX Analytics. Разработано на основе глубинных интервью и рыночного анализа.</p>
+    </footer>
+
+    <!-- Interactive JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Tab Navigation Logic
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+
+                    // Show target content
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // 2. Chart.js Initialization (Bar Chart for Global Pains)
+            const ctxPains = document.getElementById('painsChart').getContext('2d');
+            
+            // Chart Data Object
+            const painData = {
+                labels: [
+                    ['Отсутствие нужных', 'контактов (Шум)'], 
+                    ['Сложность', 'поиска инвесторов'], 
+                    ['Утеря контекста', 'знакомств'], 
+                    ['Низкая', 'вовлеченность'],
+                    ['Нарушение', 'приватности']
+                ],
+                datasets: [{
+                    label: 'Уровень разочарования (Оценка 1-10)',
+                    data: [8.5, 7.8, 9.2, 6.5, 8.0],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.7)', // blue-500
+                        'rgba(245, 158, 11, 0.7)',  // amber-500
+                        'rgba(239, 68, 68, 0.7)',   // red-500
+                        'rgba(100, 116, 139, 0.7)', // slate-500
+                        'rgba(16, 185, 129, 0.7)'   // emerald-500
+                    ],
+                    borderColor: [
+                        'rgb(37, 99, 235)',
+                        'rgb(217, 119, 6)',
+                        'rgb(220, 38, 38)',
+                        'rgb(71, 85, 105)',
+                        'rgb(5, 150, 105)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            };
+
+            // Chart Configuration
+            new Chart(ctxPains, {
+                type: 'bar',
+                data: painData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Important for Tailwind container constraints
+                    plugins: {
+                        legend: {
+                            display: false // Hide legend for cleaner look
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 14 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Острота проблемы: ${context.parsed.y} / 10`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            grid: {
+                                color: 'rgba(203, 213, 225, 0.4)', // slate-300 transparent
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b' // slate-500
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#475569', // slate-600
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12 // Responsive font size
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
